@@ -24,6 +24,9 @@
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
     <!-- Custom styles for this template -->
     <link href="css/theme.css" rel="stylesheet">
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
@@ -37,6 +40,7 @@
 
 </head>
 <body>
+
 
     <!-- Fixed navbar -->
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -65,35 +69,99 @@
 
         <div class="container">
             <div class="page-header">
-                <h1>Some Projects I Have Done</h1>
+                <h1>Control the Spark Core in different ways!</h1>
             </div>
-            <h3>Project 1</h3>
-            <p>Some details about the project here. </p>
+            <h3>Lamp Toggle</h3>
+            <p>Turn the lamp ON or OFF </p>
             <div class="row">
                 <div class="col-md-4">
-                      <p>Detail 1</p>
+                    <table class="table table-condensed">
+                        <tbody>
+                            <tr>
+                                <td>Core ID:</td>
+                                <td><input type="text" id="coreId" class="txtInput" value="54ff6c066678574955480767"></td>
+                            </tr>
+                            <tr>
+                                <td>Access Token:</td>
+                                <td><input type="text" id="accessToken" class="txtInput" value="52015047d2d35ccea759b591a922432631f69fd7"></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="col-md-4">
-                    <p>Detail 2</p>
+                    <input id="toggle-event" type="checkbox" data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
                 </div>
                 <div class="col-md-4">
-                    <p>Detail 3</p>
+                    
+                    <div id="console-event"></div>
                 </div>
 
             </div>
             <hr>
-            <h3>Project 2</h3>
-            <p>Some details about the project here. </p>
+            <h3>Control a Servo!</h3>
+            <p>Click the buttons below to move the servo. </p>
             <div class="row">
                 <div class="col-md-4">
-                    <p>Detail 1</p>
+                    <table class="table table-condensed">
+                        <tbody>
+                            <tr>
+                                <td>Core ID:</td>
+                                <td><input type="text" id="coreId" class="txtInput" value="54ff6c066678574955480767"></td>
+                            </tr>
+                            <tr>
+                                <td>Access Token:</td>
+                                <td><input type="text" id="accessToken" class="txtInput" value="52015047d2d35ccea759b591a922432631f69fd7"></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="col-md-4">
-                    <p>Detail 2</p>
+                    <button class="btn btn-success" onclick="servoOn()">Run Servo!</button>
                 </div>
                 <div class="col-md-4">
-                    <p>Detail 3</p>
+                    <div id="servo-event"></div>
                 </div>
+                <h3>RGB LED</h3>
+                <p>Make different colors!  </p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <table class="table table-condensed">
+                            <tbody>
+                                <tr>
+                                    <td>Core ID:</td>
+                                    <td><input type="text" id="coreId" class="txtInput" value="54ff6c066678574955480767"></td>
+                                </tr>
+                                <tr>
+                                    <td>Access Token:</td>
+                                    <td><input type="text" id="accessToken" class="txtInput" value="52015047d2d35ccea759b591a922432631f69fd7"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <table class="table table-condensed">
+                            <tbody>
+                                <tr>
+                                    <td>Red Value:</td>
+                                    <td><input type="text" id="R" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-id="BC" data-slider-tooltip="hide" data-slider-handle="round"></td>
+                                </tr>
+                                <tr>
+                                    <td>Green Value:</td>
+                                    <td><input type="text" id="G" class="txtInput" value="0"></td>
+                                </tr>
+                                <tr>
+                                    <td>Blue Value:</td>
+                                    <td><input type="text" id="B" class="txtInput" value="0"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-success" onclick="RGB()">Change Color!</button>
+                    </div>
+
+                </div>
+                <hr>
 
             </div>
             <hr>
@@ -102,6 +170,8 @@
     </body>
 </html>
 
+ <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <!-- Bootstrap core JavaScript
       ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -109,5 +179,94 @@
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="js/bootstrap.min.js"></script>
 <script src="assets/js/docs.min.js"></script>
+<!-- led toggle button-->
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+
+
+<script>
+    var coreId = "";
+    var accessToken = "";
+    var command;
+    var url;
+
+    var redValue;
+    var greebValue;
+    var blueValue;
+
+    $('#servo-event').html('<img src="images/servoOFF.png" alt="Servo OFF" style="width:75px;height:150px" />')
+    $('#console-event').html('<img src="images/bulbOFF.png" alt="Bulb OFF" style="width:75px;height:75px" />')
+
+     //Lamp Toggle
+    $(function () {
+        $('#toggle-event').change(function () {
+
+            coreId = $('#coreId').val().trim();
+            accessToken = $('#accessToken').val().trim();
+
+            url = "https://api.particle.io/v1/devices/" + coreId + "/relay";
+
+            if ($(this).prop('checked')) {
+                $('#console-event').html('<img src="images/bulbON.png" alt="Bulb OFF" style="width:75px;height:75px" />')
+                command = "on";
+            }
+            else {
+                $('#console-event').html('<img src="images/bulbOFF.png" alt="Bulb OFF" style="width:75px;height:75px" />')
+                command = "off";
+            }
+            
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    access_token: accessToken,
+                    args: command
+                },
+            })
+            
+        })
+    })
+
+    //Servo Toggle
+    function servoOn() {
+        $('#servo-event').html('<img src="images/servoON.gif" alt="Servo ON" style="width:75px;height:150px" />')
+        coreId = $('#coreId').val().trim();
+        accessToken = $('#accessToken').val().trim();
+
+        url = "https://api.particle.io/v1/devices/" + coreId + "/servo";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                access_token: accessToken,
+                args: "on",
+            },
+            success: function () { $('#servo-event').html('<img src="images/servoOFF.png" alt="Servo OFF" style="width:75px;height:150px" />') },
+        })
+    }
+
+    //RGB Colors
+    function RGB() {
+        coreId = $('#coreId').val().trim();
+        accessToken = $('#accessToken').val().trim();
+
+        redValue = $('#R').val().trim();
+        greenValue = $('#G').val().trim();
+        blueValue = $('#B').val().trim();
+
+        var command = redValue + "," + greenValue + "," + blueValue;
+      
+        url = "https://api.particle.io/v1/devices/" + coreId + "/RGB";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                access_token: accessToken,
+                args: command
+            },
+        })
+    }
+</script>
