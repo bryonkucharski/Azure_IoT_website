@@ -121,6 +121,7 @@
                 <div class="col-md-4">
                     <div id="servo-event"></div>
                 </div>
+            </div>
                 <h3>RGB LED</h3>
                 <p>Make different colors!  </p>
                 <div class="row">
@@ -162,8 +163,21 @@
 
                 </div>
                 <hr>
+            <h3>Random Number Generator</h3>
+            <p>Press the button to reveal a random number.</p>
+            <div class="row">
+                <div class="col-md-4">
+                    <button class="btn btn-success" onclick="getRandomInt(1,30)">Generate Random!</button>
+                </div>
+                <div class="col-md-4">
+                    <div id="number-event"></div>
+                </div>
+                <div class="col-md-4">
+         
+                </div>
 
             </div>
+           
             <hr>
          </div>
 
@@ -197,6 +211,11 @@
 
     $('#servo-event').html('<img src="images/servoOFF.png" alt="Servo OFF" style="width:75px;height:150px" />')
     $('#console-event').html('<img src="images/bulbOFF.png" alt="Bulb OFF" style="width:75px;height:75px" />')
+
+    function getRandomInt(min, max) {
+        var num = Math.floor(Math.random() * (max - min + 1)) + min;
+        $('#number-event').html('<h1>' + num + '</h1>')
+    }
 
      //Lamp Toggle
     $(function () {
